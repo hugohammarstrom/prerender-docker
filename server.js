@@ -7,6 +7,8 @@ const removePrefetchTags = require('./plugins/removePrefetchTags');
 const log = require('./plugins/log');
 const consoleDebugger = require('./plugins/consoleDebugger');
 
+
+
 const options = {
 	pageDoneCheckInterval: process.env.PAGE_DONE_CHECK_INTERVAL || 500,
 	pageLoadTimeout: process.env.PAGE_LOAD_TIMEOUT || 20000,
@@ -24,9 +26,16 @@ server.use(prerender.blockResources());
 server.use(prerender.removeScriptTags());
 server.use(removePrefetchTags);
 server.use(prerender.httpHeaders());
+server.use(require('prerender-memory-cache'))
+
 if (process.env.DEBUG_PAGES) {
 	server.use(consoleDebugger);
 }
 server.use(stripHtml);
 
 server.start();
+
+module.exports = {
+	CACHE_MAXSIZE: 1000,
+	CACHE_TTL: 60
+} 
